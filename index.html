@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="數資化學">
+  <title>數資班化學查詢器</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; background: #f1f5f9; padding: 20px; text-align: center; }
+    .card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-top: 10px; }
+    h2 { color: #1e293b; margin-bottom: 15px; }
+    input { width: 100%; padding: 12px; font-size: 18px; border: 2px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; text-align: center; }
+    .btn-search { width: 100%; background: #2563eb; color: white; font-size: 18px; font-weight: bold; border: none; padding: 12px; border-radius: 8px; margin-top: 15px; cursor: pointer; }
+    .result { font-size: 32px; font-weight: bold; color: #4338ca; margin-top: 20px; min-height: 45px; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>🧪 數資班化學查詢器</h2>
+    <input type="text" id="userInput" placeholder="例如：氧氣、二氧化碳、硫酸">
+
+    <button class="btn-search" onclick="search()">查詢化學式</button>
+    <div class="result" id="result">請輸入中文名稱</div>
+  </div>
+
+<script>
+  // 中文名稱 (Key) -> 化學式 (Value) 對照字典
+  const dict = {
+    // 氣體與元素
+    "氧氣": "O₂",
+    "氫氣": "H₂",
+    "氮氣": "N₂",
+    "臭氧": "O₃",
+    "二氧化碳": "CO₂",
+    "一氧化碳": "CO",
+    "二氧化硫": "SO₂",
+    "二氧化氮": "NO₂",
+    
+    // 常見化合物
+    "水": "H₂O",
+    "雙氧水": "H₂O₂",
+    "過氧化氫": "H₂O₂",
+    
+    // 酸類
+    "鹽酸": "HCl",
+    "硫酸": "H₂SO₄",
+    "硝酸": "HNO₃",
+    "醋酸": "CH₃COOH",
+    "乙酸": "CH₃COOH",
+    "碳酸": "H₂CO₃",
+    "磷酸": "H₃PO₄",
+    
+    // 鹼類與鹽類
+    "氫氧化鈉": "NaOH",
+    "氫氧化鈣": "Ca(OH)₂",
+    "氯化鈉": "NaCl",
+    "碳酸鈣": "CaCO₃",
+    "碳酸氫鈉": "NaHCO₃",
+    "小蘇打": "NaHCO₃",
+    "硫酸銅": "CuSO₄",
+    
+    // 有機物
+    "甲烷": "CH₄",
+    "乙醇": "C₂H₅OH",
+    "酒精": "C₂H₅OH",
+    "葡萄糖": "C₆H₁₂O₆",
+    "蔗糖": "C₁₂H₂₂O₁₁"
+  };
+
+  function search() {
+    let input = document.getElementById("userInput").value.trim();
+    if (!input) { 
+      document.getElementById("result").innerText = "請輸入內容"; 
+      return; 
+    }
+    
+    // 查詢字典：若找到對應的中文，輸出化學式；若找不到，顯示查無此項目
+    if (dict[input]) {
+      document.getElementById("result").innerText = dict[input];
+    } else {
+      document.getElementById("result").innerText = "查無此化學式";
+    }
+  }
+</script>
+</body>
+</html>
