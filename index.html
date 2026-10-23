@@ -13,62 +13,71 @@
     h2 { color: #1e293b; margin-bottom: 15px; }
     input { width: 100%; padding: 12px; font-size: 18px; border: 2px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; text-align: center; }
     .btn-search { width: 100%; background: #2563eb; color: white; font-size: 18px; font-weight: bold; border: none; padding: 12px; border-radius: 8px; margin-top: 15px; cursor: pointer; }
-    .result { font-size: 32px; font-weight: bold; color: #4338ca; margin-top: 20px; min-height: 45px; }
+    .result { font-size: 32px; font-weight: bold; color: #4338ca; margin-top: 20px; min-height: 45px; word-break: break-all; }
   </style>
 </head>
 <body>
 
   <div class="card">
     <h2>🧪 數資班化學查詢器</h2>
-    <input type="text" id="userInput" placeholder="例如：氧氣、二氧化碳、硫酸">
+    <input type="text" id="userInput" placeholder="輸入中文 (如: 氫、鈾、硫酸、小蘇打)">
 
-    <button class="btn-search" onclick="search()">查詢化學式</button>
+    <button class="btn-search" onclick="search()">查詢化學符號 / 化學式</button>
     <div class="result" id="result">請輸入中文名稱</div>
   </div>
 
 <script>
-  // 中文名稱 (Key) -> 化學式 (Value) 對照字典
+  // 完整化學資料庫 (包含 118 種元素週期表 + 常見離子與化合物)
   const dict = {
-    // 氣體與元素
-    "氧氣": "O₂",
-    "氫氣": "H₂",
-    "氮氣": "N₂",
-    "氦氣": "He",
-    "臭氧": "O₃",
-    "二氧化碳": "CO₂",
-    "一氧化碳": "CO",
-    "二氧化硫": "SO₂",
-    "二氧化氮": "NO₂",
-    
-    // 常見化合物
-    "水": "H₂O",
-    "雙氧水": "H₂O₂",
-    "過氧化氫": "H₂O₂",
-    
-    // 酸類
-    "鹽酸": "HCl",
-    "硫酸": "H₂SO₄",
-    "硝酸": "HNO₃",
-    "醋酸": "CH₃COOH",
-    "乙酸": "CH₃COOH",
-    "碳酸": "H₂CO₃",
-    "磷酸": "H₃PO₄",
-    
-    // 鹼類與鹽類
-    "氫氧化鈉": "NaOH",
-    "氫氧化鈣": "Ca(OH)₂",
-    "氯化鈉": "NaCl",
-    "碳酸鈣": "CaCO₃",
-    "碳酸氫鈉": "NaHCO₃",
-    "小蘇打": "NaHCO₃",
-    "硫酸銅": "CuSO₄",
-    
-    // 有機物
-    "甲烷": "CH₄",
-    "乙醇": "C₂H₅OH",
-    "酒精": "C₂H₅OH",
-    "葡萄糖": "C₆H₁₂O₆",
-    "蔗糖": "C₁₂H₂₂O₁₁"
+    // ------------------- 118 種化學元素 -------------------
+    "氫": "H", "氦": "He", "鋰": "Li", "鈹": "Be", "硼": "B",
+    "碳": "C", "氮": "N", "氧": "O", "氟": "F", "氖": "Ne",
+    "鈉": "Na", "鎂": "Mg", "鋁": "Al", "矽": "Si", "磷": "P",
+    "硫": "S", "氯": "Cl", "氬": "Ar", "鉀": "K", "鈣": "Ca",
+    "鈧": "Sc", "鈦": "Ti", "釩": "V", "鉻": "Cr", "錳": "Mn",
+    "鐵": "Fe", "鈷": "Co", "鎳": "Ni", "銅": "Cu", "鋅": "Zn",
+    "鎵": "Ga", "鍺": "Ge", "砷": "As", "硒": "Se", "溴": "Br",
+    "氪": "Kr", "銣": "Rb", "鍶": "Sr", "釔": "Y", "鋯": "Zr",
+    "鈮": "Nb", "鉬": "Mo", "鎝": "Tc", "釕": "Ru", "銠": "Rh",
+    "": "Pd", "銀": "Ag", "鎘": "Cd", "銦": "In", "錫": "Sn",
+    "銻": "Sb", "碲": "Te", "碘": "I", "氙": "Xe", "銫": "Cs",
+    "鋇": "Ba", "鑭": "La", "鈰": "Ce", "鐠": "Pr", "釹": "Nd",
+    "鉕": "Pm", "釤": "Sm", "銪": "Eu", "釓": "Gd", "鋱": "Tb",
+    "鏑": "Dy", "鈥": "Ho", "鉺": "Er", "銩": "Tm", "鐿": "Yb",
+    "鎦": "Lu", "鉿": "Hf", "鉭": "Ta", "鎢": "W", "錸": "Re",
+    "": "Os", "銥": "Ir", "鉑": "Pt", "白金": "Pt", "金": "Au",
+    "汞": "Hg", "水銀": "Hg", "鉈": "Tl", "鉛": "Pb", "鉍": "Bi",
+    "釙": "Po", "砈": "At", "氡": "Rn", "鍅": "Fr", "鐳": "Ra",
+    "錒": "Ac", "釷": "Th", "鏷": "Pa", "鈾": "U", "錼": "Np",
+    "鈽": "Pu", "": "Am", "鋦": "Cm", "鉳": "Bk", "鉲": "Cf",
+    "鑀": "Es", "鐨": "Fm", "鍆": "Md", "鍩": "No", "鐒": "Lr",
+    "鑪": "Rf", "𨧀": "Db", "𨭎": "Sg", "𨨏": "Bh", "𨭆": "Hs",
+    "䥑": "Mt", "鐽": "Ds", "錀": "Rg", "鎶": "Cn", "鉨": "Nh",
+    "鈇": "Fl", "鏌": "Mc", "鉝": "Lv", "鿬": "Ts", "鿫": "Og",
+
+    // ------------------- 常見離子符號 -------------------
+    "氫離子": "H⁺", "鈉離子": "Na⁺", "鉀離子": "K⁺", "銨根離子": "NH₄⁺", "銨根": "NH₄⁺",
+    "鎂離子": "Mg²⁺", "鈣離子": "Ca²⁺", "鋇離子": "Ba²⁺", "銅離子": "Cu²⁺",
+    "亞鐵離子": "Fe²⁺", "鐵離子": "Fe³⁺", "鋁離子": "Al³⁺",
+    "氯離子": "Cl⁻", "氫氧根離子": "OH⁻", "氫氧根": "OH⁻", "硝酸根離子": "NO₃⁻", "硝酸根": "NO₃⁻",
+    "醋酸根離子": "CH₃COO⁻", "醋酸根": "CH₃COO⁻", "氧離子": "O²⁻", "硫離子": "S²⁻",
+    "硫酸根離子": "SO₄²⁻", "硫酸根": "SO₄²⁻", "碳酸根離子": "CO₃²⁻", "碳酸根": "CO₃²⁻",
+
+    // ------------------- 常見化合物與酸鹼鹽 -------------------
+    "氧氣": "O₂", "氫氣": "H₂", "氮氣": "N₂", "二氧化碳": "CO₂",
+    "一氧化碳": "CO", "二氧化硫": "SO₂", "氨氣": "NH₃",
+    "氫氯酸": "HCl", "鹽酸": "HCl", "硫酸": "H₂SO₄", "硝酸": "HNO₃",
+    "醋酸": "CH₃COOH", "乙酸": "CH₃COOH", "碳酸": "H₂CO₃",
+    "氫氧化鈉": "NaOH", "燒鹼": "NaOH", "苛性鈉": "NaOH",
+    "氫氧化鈣": "Ca(OH)₂", "熟石灰": "Ca(OH)₂", "澄清石灰水": "Ca(OH)₂",
+    "氨水": "NH₄OH", "氫氧化銨": "NH₄OH",
+    "水": "H₂O", "雙氧水": "H₂O₂", "過氧化氫": "H₂O₂",
+    "氯化鈉": "NaCl", "食鹽": "NaCl",
+    "碳酸鈣": "CaCO₃", "大理石": "CaCO₃", "石灰石": "CaCO₃", "蛋殼": "CaCO₃",
+    "碳酸氫鈉": "NaHCO₃", "小蘇打": "NaHCO₃", "烘焙鹼": "NaHCO₃",
+    "碳酸鈉": "Na₂CO₃", "蘇打": "Na₂CO₃", "洗滌鹼": "Na₂CO₃",
+    "硫酸鈣": "CaSO₄", "石膏": "CaSO₄",
+    "硫酸銅": "CuSO₄", "葡萄糖": "C₆H₁₂O₆", "乙醇": "C₂H₅OH", "酒精": "C₂H₅OH"
   };
 
   function search() {
@@ -78,11 +87,11 @@
       return; 
     }
     
-    // 查詢字典：若找到對應的中文，輸出化學式；若找不到，顯示查無此項目
+    // 查詢字典
     if (dict[input]) {
       document.getElementById("result").innerText = dict[input];
     } else {
-      document.getElementById("result").innerText = "查無此化學式";
+      document.getElementById("result").innerText = "查無此項目";
     }
   }
 </script>
